@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icons/toolboxExportImage.png</file>
+        <file>icons/toolboxGraphik.png</file>
+        <file>icons/toolboxExportImageGrey.png</file>
+        <file>icons/toolboxGraphikGrey.png</file>
+        <file>icons/toolboxOpenFile.png</file>
+        <file>icons/toolboxOpenFileGrey.png</file>
+        <file>icons/toolboxPreferencesGrey.png</file>
+        <file>icons/toolboxPreferences.png</file>
+        <file>icons/toolboxClose.png</file>
+        <file>icons/toolboxCloseGrey.png</file>
+        <file>icons/toolboxAbout.png</file>
+        <file>icons/toolboxAboutGrey.png</file>
+        <file>icons/icon.png</file>
+    </qresource>
+</RCC>
