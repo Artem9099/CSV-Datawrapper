@@ -15,7 +15,7 @@
 #include <QtCharts/QPieSlice>
 #include <cmath>
 #include <shlobj.h>
-#include "csvhandling.h"
+#include "datahandling.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -58,9 +58,11 @@ private slots:
         QMessageBox::information(this, "Directory Modified", "Your Directory is modified");
     }
 
+    void on_actionVersion_triggered();
+
 private:
     Ui::MainWindow *ui;
-    CsvHandling csv;
+    DataHandling dataHandler;
     void DrawLineChart(int resolution, bool setAnimations);
     QChartView *chartView = new QChartView();
     void PopulateThemeBox();
@@ -69,6 +71,7 @@ private:
     void LoadConfigs();
     void SetSingleStep();
     void SetDelimiter();
+    QString sChartTitle;
     //QFileSystemWatcher watcher;
 
 };

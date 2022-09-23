@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setWindowTitle("CSV-Datawrapper (Viewer)");
+    this->setWindowTitle("Datawrapper (Viewer)");
 
     PopulateThemeBox();
     PopulateLegendBox();
@@ -25,8 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
             sFilePath = filenames.at(i);
             ui->statusbar->showMessage(sFilePath);
         }
-        if(sFilePath.right(3).toLower() == "csv") {
-            csv.LoadFileContent();
+        if(sFilePath.right(3).toLower() == "csv" || sFilePath.right(3).toLower() == "xml") {
+            dataHandler.LoadFileContent();
             ui->stackedWidget->setCurrentWidget(ui->pageMain);
             DrawLineChart(ui->sbResolution->value(), false);
         }
@@ -47,12 +47,17 @@ void MainWindow::DrawLineChart(int resolution, bool setAnimations) {
     QLineSeries *xAxesSeries = new QLineSeries();
     QLineSeries *yAxesSeries = new QLineSeries();
 
-    series->setName("CAT");
+    sFilePath.replace('\\', '/');
+    QStringList splitPath = sFilePath.split('/');
+    splitPath = splitPath[splitPath.count() - 1].split('.');
+    sChartTitle = splitPath[0];
+
+    series->setName(sChartTitle);
     nullSeries->setName("Nullachse");
     xAxesSeries->setName("Messachse X/T");
     yAxesSeries->setName("Messachse Y");
 
-    csv.SetValueList(resolution);
+    dataHandler.SetValueList(resolution);
 
     unsigned int i = dlTimeList.count();
 
@@ -245,12 +250,11 @@ void MainWindow::on_actionExportImage_triggered()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    sFilePath = QFileDialog::getOpenFileName(this, tr("Öffne CSV-Datei"), "", tr("csv Dateien (*.csv)"));
-
+    sFilePath = QFileDialog::getOpenFileName(this, tr("Öffne CSV/XML-Datei"), "", tr("csv/xml Dateien (*.csv *.xml)"));
     iPointsTotal = 0;
 
-    if(sFilePath.right(3).toLower() == "csv") {
-        csv.LoadFileContent();
+    if(sFilePath.right(3).toLower() == "csv" || sFilePath.right(3).toLower() == "xml") {
+        dataHandler.LoadFileContent();
         ui->stackedWidget->setCurrentWidget(ui->pageMain);
         DrawLineChart(ui->sbResolution->value(), bAnimationsOn);
     }
@@ -366,6 +370,7 @@ void MainWindow::UpdateUi()
             ui->grpImageExportSettings->setStyleSheet("background-color: rgb(240,240,240); color: rgb(24,24,24)");
             ui->grpCsvSettings->setStyleSheet("background-color: rgb(240,240,240); color: rgb(24,24,24)");
             ui->pageHome->setStyleSheet("background-color: rgb(240,240,240); color: rgb(24,24,24)");
+            ui->pageVersion->setStyleSheet("background-color: rgb(240,240,240); color: rgb(24,24,24)");
             ui->actionOpen->setIcon(QIcon(":/icons/icons/toolboxOpenFile.png"));
             ui->actionPreferences->setIcon(QIcon(":/icons/icons/toolboxPreferences.png"));
             ui->actionGraphik->setIcon(QIcon(":/icons/icons/toolboxGraphik.png"));
@@ -385,6 +390,7 @@ void MainWindow::UpdateUi()
             ui->grpImageExportSettings->setStyleSheet("background-color: rgb(18,18,24); color: rgb(214,214,214)");
             ui->grpCsvSettings->setStyleSheet("background-color: rgb(18,18,24); color: rgb(214,214,214)");
             ui->pageHome->setStyleSheet("background-color: rgb(18,18,24); color: rgb(214,214,214)");
+            ui->pageVersion->setStyleSheet("background-color: rgb(18,18,24); color: rgb(214,214,214)");
             ui->actionOpen->setIcon(QIcon(":/icons/icons/toolboxOpenFileGrey.png"));
             ui->actionPreferences->setIcon(QIcon(":/icons/icons/toolboxPreferencesGrey.png"));
             ui->actionGraphik->setIcon(QIcon(":/icons/icons/toolboxGraphikGrey.png"));
@@ -403,6 +409,7 @@ void MainWindow::UpdateUi()
             ui->grpImageExportSettings->setStyleSheet("background-color: rgb(64,67,74); color: rgb(214,214,214)");
             ui->grpCsvSettings->setStyleSheet("background-color: rgb(64,67,74); color: rgb(214,214,214)");
             ui->pageHome->setStyleSheet("background-color: rgb(64,67,74); color: rgb(214,214,214)");
+            ui->pageVersion->setStyleSheet("background-color: rgb(64,67,74); color: rgb(214,214,214)");
             ui->actionOpen->setIcon(QIcon(":/icons/icons/toolboxOpenFileGrey.png"));
             ui->actionPreferences->setIcon(QIcon(":/icons/icons/toolboxPreferencesGrey.png"));
             ui->actionGraphik->setIcon(QIcon(":/icons/icons/toolboxGraphikGrey.png"));
@@ -421,6 +428,7 @@ void MainWindow::UpdateUi()
             ui->grpImageExportSettings->setStyleSheet("background-color: rgb(158,137,101); color: rgb(24,24,24)");
             ui->grpCsvSettings->setStyleSheet("background-color: rgb(158,137,101); color: rgb(24,24,24)");
             ui->pageHome->setStyleSheet("background-color: rgb(158,137,101); color: rgb(24,24,24)");
+            ui->pageVersion->setStyleSheet("background-color: rgb(158,137,101); color: rgb(24,24,24)");
             ui->actionOpen->setIcon(QIcon(":/icons/icons/toolboxOpenFile.png"));
             ui->actionPreferences->setIcon(QIcon(":/icons/icons/toolboxPreferences.png"));
             ui->actionGraphik->setIcon(QIcon(":/icons/icons/toolboxGraphik.png"));
@@ -439,6 +447,7 @@ void MainWindow::UpdateUi()
             ui->grpImageExportSettings->setStyleSheet("background-color: rgb(1,139,186); color: rgb(24,24,24)");
             ui->grpCsvSettings->setStyleSheet("background-color: rgb(1,139,186); color: rgb(24,24,24)");
             ui->pageHome->setStyleSheet("background-color: rgb(1,139,186); color: rgb(24,24,24)");
+            ui->pageVersion->setStyleSheet("background-color: rgb(1,139,186); color: rgb(24,24,24)");
             ui->actionOpen->setIcon(QIcon(":/icons/icons/toolboxOpenFile.png"));
             ui->actionPreferences->setIcon(QIcon(":/icons/icons/toolboxPreferences.png"));
             ui->actionGraphik->setIcon(QIcon(":/icons/icons/toolboxGraphik.png"));
@@ -457,6 +466,7 @@ void MainWindow::UpdateUi()
             ui->grpImageExportSettings->setStyleSheet("background-color: rgb(255,171,3); color: rgb(24,24,24)");
             ui->grpCsvSettings->setStyleSheet("background-color: rgb(255,171,3); color: rgb(24,24,24)");
             ui->pageHome->setStyleSheet("background-color: rgb(255,171,3); color: rgb(24,24,24)");
+            ui->pageVersion->setStyleSheet("background-color: rgb(255,171,3); color: rgb(24,24,24)");
             ui->actionOpen->setIcon(QIcon(":/icons/icons/toolboxOpenFile.png"));
             ui->actionPreferences->setIcon(QIcon(":/icons/icons/toolboxPreferences.png"));
             ui->actionGraphik->setIcon(QIcon(":/icons/icons/toolboxGraphik.png"));
@@ -475,6 +485,7 @@ void MainWindow::UpdateUi()
             ui->grpImageExportSettings->setStyleSheet("background-color: rgb(206,231,240); color: rgb(24,24,24)");
             ui->grpCsvSettings->setStyleSheet("background-color: rgb(206,231,240); color: rgb(24,24,24)");
             ui->pageHome->setStyleSheet("background-color: rgb(206,231,240); color: rgb(24,24,24)");
+            ui->pageVersion->setStyleSheet("background-color: rgb(206,231,240); color: rgb(24,24,24)");
             ui->actionOpen->setIcon(QIcon(":/icons/icons/toolboxOpenFile.png"));
             ui->actionPreferences->setIcon(QIcon(":/icons/icons/toolboxPreferences.png"));
             ui->actionGraphik->setIcon(QIcon(":/icons/icons/toolboxGraphik.png"));
@@ -493,6 +504,7 @@ void MainWindow::UpdateUi()
             ui->grpImageExportSettings->setStyleSheet("background-color: rgb(240,240,240); color: rgb(24,24,24)");
             ui->grpCsvSettings->setStyleSheet("background-color: rgb(240,240,240); color: rgb(24,24,24)");
             ui->pageHome->setStyleSheet("background-color: rgb(240,240,240); color: rgb(24,24,24)");
+            ui->pageVersion->setStyleSheet("background-color: rgb(240,240,240); color: rgb(24,24,24)");
             ui->actionOpen->setIcon(QIcon(":/icons/icons/toolboxOpenFile.png"));
             ui->actionPreferences->setIcon(QIcon(":/icons/icons/toolboxPreferences.png"));
             ui->actionGraphik->setIcon(QIcon(":/icons/icons/toolboxGraphik.png"));
@@ -590,8 +602,6 @@ void MainWindow::LoadConfigs() {
     ui->nbxResY->setValue(mainVal.toInt());
     mainVal = obj.value(QString("cbxUseOriginalSize"));
     ui->cbxUseOriginalSize->setChecked(mainVal.toBool());
-    mainVal = obj.value(QString("nbxResY"));
-    ui->cmbDelimiter->setCurrentIndex(mainVal.toInt());
     mainVal = obj.value(QString("cmbDelimiter"));
     ui->cmbDelimiter->setCurrentIndex(mainVal.toInt());
 
@@ -660,3 +670,9 @@ void MainWindow::SetDelimiter() {
         break;
     }
 }
+
+void MainWindow::on_actionVersion_triggered()
+{
+   ui->stackedWidget->setCurrentWidget(ui->pageVersion);
+}
+
