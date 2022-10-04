@@ -103,7 +103,7 @@ void DataHandling::LoadXmlContent() {
         QDomElement root = measureXml.documentElement();
         QDomElement node = root.firstChild().toElement();
 
-        if(node.tagName() == "MAIN.Druckrampe"){
+        if(node.tagName() == "DATA"){
             while(!node.isNull()){
                 QDomNodeList axis = node.childNodes();
                 QString x = axis.item(0).toElement().text();

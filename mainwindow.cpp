@@ -237,15 +237,21 @@ void MainWindow::on_actionExportImage_triggered()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Image speichern"), imagePath, tr("Images (*.png *.xpm *.jpg)"));
 
     if(ui->cbxUseOriginalSize->isChecked() == false) {
-        chartView->setMinimumWidth(ui->nbxResX->value());
+        chartView->chart()->setAnimationOptions(QChart::NoAnimation);
+        chartView->setFixedSize(ui->nbxResX->value(), ui->nbxResY->value());
+        chartView->chart()->setAnimationOptions(QChart::NoAnimation);
         //chartView->setMaximumWidth(ui->nbxResX->value());
-        chartView->setMinimumHeight(ui->nbxResY->value());
+        //chartView->setMinimumHeight(ui->nbxResY->value());
         //chartView->setMaximumHeight(ui->nbxResY->value());
     }
 
     if(fileName.right(3).toLower() == "png" || fileName.right(3).toLower() == "xpm" || fileName.right(3).toLower() == "jpg") {
         chartView->grab().save(fileName);
     }
+
+    chartView->setMinimumSize(ui->sbZoom->value(),0);
+    chartView->setMaximumSize(16777215,16777215);
+    on_sbZoom_sliderReleased();
 }
 
 void MainWindow::on_actionOpen_triggered()
